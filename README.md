@@ -251,23 +251,33 @@ Producto
 
 ## Base de Datos
 
-Crear una base de datos llamada:
+El backend usa Flyway para crear y validar el esquema al iniciar. Para una
+instalación nueva, crear primero una base vacía:
 
 ```sql
 CREATE DATABASE tienda_ropa_db;
 ```
 
-Configurar las credenciales en:
+Configurar la conexión mediante variables de entorno:
 
-```properties
-application.properties
+```text
+DATABASE_URL=jdbc:mysql://localhost:3306/tienda_ropa_db?serverTimezone=UTC
+DB_USERNAME=root
+DB_PASSWORD=<database-password>
+JWT_SECRET=<private-key-at-least-32-bytes>
 ```
 
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/tienda_ropa_db
-spring.datasource.username=root
-spring.datasource.password=
-```
+Set `JWT_SECRET` to a private key of at least 32 bytes and keep it in a secret
+manager or environment configuration; do not commit the key.
+
+Al iniciar la aplicación, Flyway aplica las migraciones versionadas y Hibernate
+valida el esquema; Hibernate no crea ni actualiza tablas. Las migraciones no
+incluyen datos de demostración.
+
+**Bases existentes:** no ejecutar migraciones sobre una base con datos sin una
+revisión de compatibilidad del esquema y un respaldo verificado. El baseline
+automático está desactivado por defecto; `FLYWAY_BASELINE_ON_MIGRATE` no debe
+habilitarse hasta completar esa revisión y definir explícitamente el procedimiento.
 
 ---
 
